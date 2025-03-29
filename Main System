@@ -1,0 +1,292 @@
+
+// Library System
+
+package com.mycompany.aye;
+import java.util.*;
+
+
+//  books data or details 
+class Book {
+    private String bookId;
+    private String title;
+    private String author;
+    private boolean availability;
+
+    public Book(String title, String author) {
+        this.bookId = UUID.randomUUID().toString();
+        this.title = title;
+        this.author = author;
+        this.availability = true;
+    }
+
+    public String getBookId() {
+        return bookId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public boolean isAvailable() {
+        return availability;
+    }
+
+    public void setAvailability(boolean availability) {
+        this.availability = availability;
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + bookId + ", Title: " + title + ", Author: " + author + ", Available: " + availability;
+    }
+}
+
+
+// Library Menu's / INTERFACE - Data structure using Hashmap & ArrayList
+
+class Library {
+    private HashMap<String, Book> books;
+    private Scanner scanner; // Add a Scanner instance for the Library class
+
+    public Library(Scanner scanner) {
+        this.books = new HashMap<>();
+        this.scanner = scanner; // Initialize the Scanner
+    }
+
+    // adding book 
+    public void addBook(String title, String author) {
+        Book newBook = new Book(title, author);
+        books.put(newBook.getBookId(), newBook);
+
+        System.out.println("Book '" + title + "' by " + author + " added successfully with ID: " + newBook.getBookId());
+        System.out.println(" ");
+        System.out.println("                    Press any key to continue...");
+        scanner.nextLine(); // double click then return to main menu
+    }
+
+    // searching book
+    public void searchBook(String query) {
+        List<Book> results = new ArrayList<>();
+        String lowerQuery = query.toLowerCase();
+        for (Book book : books.values()) {
+            if (book.getTitle().toLowerCase().contains(lowerQuery) || book.getAuthor().toLowerCase().contains(lowerQuery)) {
+                results.add(book);
+            }
+        }
+        if (!results.isEmpty()) {
+            System.out.println("Search results:");
+            for (Book book : results) {
+                System.out.println(book);
+            }
+        } else {
+            System.out.println("No books found matching your query.");
+        }
+        System.out.println(" ");
+        System.out.println("       Press any key to continue...");
+        scanner.nextLine(); // double click then return to main menu
+    }
+
+    // delete book
+    public void deleteBook(String title) {
+        String bookToDeleteId = null;
+        for (Map.Entry<String, Book> entry : books.entrySet()) {
+            if (entry.getValue().getTitle().equalsIgnoreCase(title)) {
+                bookToDeleteId = entry.getKey();
+                break;
+            }
+        }
+        if (bookToDeleteId != null) {
+            books.remove(bookToDeleteId);
+            System.out.println("Book '" + title + "' deleted successfully.");
+        } else {
+            System.out.println("Book with title '" + title + "' not found.");
+        }
+        System.out.println(" ");
+        System.out.println("                    Press any key to continue...");
+        scanner.nextLine(); // double click then return to main menu
+    }
+
+    public void displayAllBooks() {
+        if (books.isEmpty()) {
+            System.out.println("The library is currently empty.");
+            return;
+        }
+        System.out.println("All books in the library:");
+        for (Book book : books.values()) {
+            System.out.println(book);
+        }
+        System.out.println(" ");
+        System.out.println("                    Press any key to continue...");
+        scanner.nextLine(); // double click then return to main menu
+    }
+
+    // checkout book
+    public void checkoutBook(String title) {
+        for (Book book : books.values()) {
+            if (book.getTitle().equalsIgnoreCase(title)) {
+                if (book.isAvailable()) {
+                    book.setAvailability(false);
+                    System.out.println("Book '" + title + "' checked out successfully.");
+                } else {
+                    System.out.println("Book '" + title + "' is currently unavailable.");
+                }
+                return;
+            }
+        }
+        System.out.println("Book with title '" + title + "' not found.");
+        System.out.println(" ");
+        System.out.println("                    Press any key to continue...");
+        scanner.nextLine(); // double click then return to main menu
+    }
+
+    
+    // return book
+    public void returnBook(String title) {
+        for (Book book : books.values()) {
+            if (book.getTitle().equalsIgnoreCase(title)) {
+                if (!book.isAvailable()) {
+                    book.setAvailability(true);
+                    System.out.println("Book '" + title + "' returned successfully.");
+                } else {
+                    System.out.println("Book '" + title + "' is already available.");
+                }
+                return;
+            }
+        }
+        System.out.println("Book with title '" + title + "' not found.");
+        System.out.println(" ");
+        System.out.println("                    Press any key to continue...");
+        scanner.nextLine(); // double click then return to main menu
+    }
+
+    // sort books - array list 
+    public void sortBooks(String sortBy) {
+        List<Book> bookList = new ArrayList<>(books.values());
+        if (sortBy.equalsIgnoreCase("title")) {
+            insertionSort(bookList, Comparator.comparing(book -> book.getTitle().toLowerCase()));
+            System.out.println("Books sorted by title:");
+        } else if (sortBy.equalsIgnoreCase("author")) {
+            insertionSort(bookList, Comparator.comparing(book -> book.getAuthor().toLowerCase()));
+            System.out.println("Books sorted by author:");
+        } else {
+            System.out.println("Invalid sorting option. Choose 'title' or 'author'.");
+            return;
+        }
+        for (Book book : bookList) {
+            System.out.println(book);
+        }
+        System.out.println(" ");
+        System.out.println("                    Press any key to continue...");
+        scanner.nextLine(); // double click then return to main menu
+    }
+  
+    
+    // using insertion list 
+    private void insertionSort(List<Book> list, Comparator<Book> comparator) {
+        int n = list.size();
+        for (int i = 1; i < n; ++i) {
+            Book key = list.get(i);
+            int j = i - 1;
+            while (j >= 0 && comparator.compare(key, list.get(j)) < 0) {
+                list.set(j + 1, list.get(j));
+                j = j - 1;
+            }
+            list.set(j + 1, key);
+        }
+    }
+}
+
+
+ //* Main Class Code 
+
+public class LibrarySystem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in); // nag Initialize ng scanner para sa Main classz
+        Library library = new Library(scanner); // nililipat ng scanner sa library class 
+
+        System.out.println("============================================================");
+        System.out.println("-------------     Welcome to our Library System!     -------------");
+        System.out.println(" ");
+        System.out.println("                    Developed by: ");
+        System.out.println("                AYE, LAURENCE PAOLO M.");
+        System.out.println("                Balderama, Carlitos Wackine");
+        System.out.println("                Ballano, Brian M.");
+        System.out.println("                Castillo, Emman Louis M.");
+        System.out.println("                Trinidad, Sean Jacob");
+        System.out.println(" ");
+        System.out.println("                      Group 7");
+        System.out.println(" ");
+        System.out.println("                    Press any key to continue...");
+
+        scanner.nextLine(); // double click  then papunta sa Main Menu
+
+        while (true) {
+
+            System.out.println("============================================================");
+            System.out.println("                    Welcome to our Library System! ");
+            System.out.println("                    What would you like to Do? ");
+            System.out.println(" ");
+            System.out.println("\nLibrary System Menu:");
+            System.out.println("1. Add new book");
+            System.out.println("2. Search for a book");
+            System.out.println("3. Delete a book");
+            System.out.println("4. Display all books");
+            System.out.println("5. Check out a book");
+            System.out.println("6. Return a book");
+            System.out.println("7. Sort books");
+            System.out.println("8. Exit");
+            System.out.print("\nEnter your choice: ");
+            int choice = scanner.nextInt();
+
+            scanner.nextLine(); // double click then return to main menu
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter the title of the book: ");
+                    String title = scanner.nextLine();
+                    System.out.print("Enter the author of the book: ");
+                    String author = scanner.nextLine();
+                    library.addBook(title, author);
+                    break;
+                case 2:
+                    System.out.print("Enter the title or author to search for: ");
+                    String query = scanner.nextLine();
+                    library.searchBook(query);
+                    break;
+                case 3:
+                    System.out.print("Enter the title of the book to delete: ");
+                    String deleteTitle = scanner.nextLine();
+                    library.deleteBook(deleteTitle);
+                    break;
+                case 4:
+                    library.displayAllBooks();
+                    break;
+                case 5:
+                    System.out.print("Enter the title of the book to check out: ");
+                    String checkoutTitle = scanner.nextLine();
+                    library.checkoutBook(checkoutTitle);
+                    break;
+                case 6:
+                    System.out.print("Enter the title of the book to return: ");
+                    String returnTitle = scanner.nextLine();
+                    library.returnBook(returnTitle);
+                    break;
+                case 7:
+                    System.out.print("Sort by (title/author): ");
+                    String sortBy = scanner.nextLine();
+                    library.sortBooks(sortBy);
+                    break;
+                case 8:
+                    System.out.println("Exiting the library system. Goodbye!");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please enter a number between 1 and 8.");
+            }
+        }
+    }
+}
