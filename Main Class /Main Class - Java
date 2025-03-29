@@ -1,0 +1,89 @@
+ //* Main Class Code 
+
+public class LibrarySystem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in); // nag Initialize ng scanner para sa Main classz
+        Library library = new Library(scanner); // nililipat ng scanner sa library class 
+
+        System.out.println("============================================================");
+        System.out.println("-------------     Welcome to our Library System!     -------------");
+        System.out.println(" ");
+        System.out.println("                    Developed by: ");
+        System.out.println("                AYE, LAURENCE PAOLO M.");
+        System.out.println("                Balderama, Carlitos Wackine");
+        System.out.println("                Ballano, Brian M.");
+        System.out.println("                Castillo, Emman Louis M.");
+        System.out.println("                Trinidad, Sean Jacob");
+        System.out.println(" ");
+        System.out.println("                      Group 7");
+        System.out.println(" ");
+        System.out.println("                    Press any key to continue...");
+
+        scanner.nextLine(); // double click  then papunta sa Main Menu
+
+        while (true) {
+
+            System.out.println("============================================================");
+            System.out.println("                    Welcome to our Library System! ");
+            System.out.println("                    What would you like to Do? ");
+            System.out.println(" ");
+            System.out.println("\nLibrary System Menu:");
+            System.out.println("1. Add new book");
+            System.out.println("2. Search for a book");
+            System.out.println("3. Delete a book");
+            System.out.println("4. Display all books");
+            System.out.println("5. Check out a book");
+            System.out.println("6. Return a book");
+            System.out.println("7. Sort books");
+            System.out.println("8. Exit");
+            System.out.print("\nEnter your choice: ");
+            int choice = scanner.nextInt();
+
+            scanner.nextLine(); // double click then return to main menu
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter the title of the book: ");
+                    String title = scanner.nextLine();
+                    System.out.print("Enter the author of the book: ");
+                    String author = scanner.nextLine();
+                    library.addBook(title, author);
+                    break;
+                case 2:
+                    System.out.print("Enter the title or author to search for: ");
+                    String query = scanner.nextLine();
+                    library.searchBook(query);
+                    break;
+                case 3:
+                    System.out.print("Enter the title of the book to delete: ");
+                    String deleteTitle = scanner.nextLine();
+                    library.deleteBook(deleteTitle);
+                    break;
+                case 4:
+                    library.displayAllBooks();
+                    break;
+                case 5:
+                    System.out.print("Enter the title of the book to check out: ");
+                    String checkoutTitle = scanner.nextLine();
+                    library.checkoutBook(checkoutTitle);
+                    break;
+                case 6:
+                    System.out.print("Enter the title of the book to return: ");
+                    String returnTitle = scanner.nextLine();
+                    library.returnBook(returnTitle);
+                    break;
+                case 7:
+                    System.out.print("Sort by (title/author): ");
+                    String sortBy = scanner.nextLine();
+                    library.sortBooks(sortBy);
+                    break;
+                case 8:
+                    System.out.println("Exiting the library system. Goodbye!");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please enter a number between 1 and 8.");
+            }
+        }
+    }
+}
